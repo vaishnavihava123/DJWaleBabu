@@ -15,7 +15,7 @@ import android.view.View;
 import java.util.Random;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnContextClickListener, View.OnLongClickListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnTouchListener, View.OnClickListener{
 MediaPlayer mediaPlayer1,mediaPlayer2;
 SoundPool soundPool;
 Random random=new Random();
@@ -25,12 +25,12 @@ int dhamaka=0;
         super.onCreate(savedInstanceState);
        // setContentView(R.layout.activity_main);
         View view=new View(this);
-        view.setOnContextClickListener(this);
+        view.setOnClickListener(this);
         view.setOnLongClickListener(this);
         view.setOnTouchListener(this);
         setContentView(view);
         soundPool=new SoundPool(5, AudioManager.STREAM_MUSIC,0);
-        dhamaka=soundPool.load();
+        dhamaka=soundPool.load(this,R.raw.explosion,1);
         mediaPlayer1=MediaPlayer.create(this,R.raw.backgroundmusic);
         mediaPlayer2=MediaPlayer.create(this,R.raw.soundtrack);
         view.setBackgroundColor(Color.rgb(random.nextInt(268),random.nextInt(265),random.nextInt(286)));
@@ -40,12 +40,6 @@ int dhamaka=0;
 
 
     @Override
-    public boolean onContextClick(View view) {
-        mediaPlayer1.start();
-        return false;
-    }
-
-    @Override
     public boolean onLongClick(View view) {
         mediaPlayer2.start();
         return false;
@@ -53,6 +47,24 @@ int dhamaka=0;
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if(dhamaka!=0)
+        {
+            soundPool.play(dhamaka,1,1,0,0,1);
+            view.setBackgroundColor(Color.rgb(random.nextInt(268),random.nextInt(265),random.nextInt(286)));
+        }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        mediaPlayer1.start();
+
+    }
+
+    @Override
+    protected void onPause() {
+        mediaPlayer1.release();
+        mediaPlayer2.release();
+        super.onPause();
     }
 }
